@@ -11,7 +11,7 @@ def join_or(arr, separator = ', ', final_separator = 'or')
 end
 
 class Participant
-  attr_reader :hand, :name
+  attr_reader :name
 
   def initialize
     @hand = []
@@ -29,7 +29,7 @@ class Participant
   def hand_total
     num_aces = 0
     total = 0
-    hand.each do |card|
+    @hand.each do |card|
       num_aces += 1 if card.rank == 'A'
       total += card.value
     end
@@ -40,7 +40,7 @@ class Participant
   end
 
   def display_hand
-    puts "#{name} has #{join_or(hand, ', ', 'and')}"
+    puts "#{name} has #{join_or(@hand, ', ', 'and')}"
   end
 end
 
@@ -51,7 +51,7 @@ class Dealer < Participant
   end
 
   def display_hand_with_hidden_card
-    puts "#{name} has #{hand.first} and a hidden card."
+    puts "#{name} has #{@hand.first} and a hidden card."
   end
 end
 
@@ -74,13 +74,11 @@ class Player < Participant
 end
 
 class Deck
-  attr_reader :cards
-
   def initialize
     @cards = []
     Card::SUITS.each do |suit|
       Card::RANKS.each do |rank|
-        cards << Card.new(suit, rank)
+        @cards << Card.new(suit, rank)
       end
     end
     shuffle_cards
@@ -88,17 +86,17 @@ class Deck
 
   def shuffle_cards
     shuffled_deck = []
-    until cards.empty?
-      card_to_add = cards.sample
+    until @cards.empty?
+      card_to_add = @cards.sample
       shuffled_deck << card_to_add
-      cards.delete(card_to_add)
+      @cards.delete(card_to_add)
     end
     @cards = shuffled_deck
   end
 
   def deal(recipient: nil, num_cards: 1, verbose: false)
     num_cards.times do
-      new_card = cards.pop
+      new_card = @cards.pop
       puts "#{recipient.name} draws a #{new_card}" if verbose
       recipient.add_to_hand(new_card)
     end
@@ -126,7 +124,7 @@ class Card
   end
 
   def to_s
-    rank + suit
+    @rank + @suit
   end
 end
 
